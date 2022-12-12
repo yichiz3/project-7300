@@ -7,6 +7,7 @@ import torch.nn.functional as F
 from torch.utils import data
 import sys, os
 import random
+import seaborn as sns
 import warnings
 warnings.filterwarnings("ignore")
 sys.path.append(os.path.abspath(__file__))
@@ -125,6 +126,12 @@ def EDA():
 
     plt.hist(train_data.iloc[:, 27].values)
     plt.title("Histogram of Pixel Values on the 28th dimension")
+    plt.show()
+
+    corrdata=train_data.iloc[:, [0, 9, 18, 27]]
+    corr = corrdata.corr()
+    plt.figure(figsize=(15,8))
+    sns.heatmap(corr, annot=True, annot_kws={"size": 15})
     plt.show()
 
 
