@@ -1,4 +1,4 @@
-from turtle import title
+#%%
 import pandas as pd
 import numpy as np
 import torch
@@ -10,8 +10,8 @@ import random
 import seaborn as sns
 import warnings
 warnings.filterwarnings("ignore")
-sys.path.append(os.path.abspath(__file__))
-PROJ_PATH = os.path.dirname(os.path.abspath(__file__))
+# sys.path.append(os.path.abspath(__file__))
+PROJ_PATH = "./"
 os.environ['KMP_DUPLICATE_LIB_OK']='TRUE'
 
 def seed_everything(seed=0):
@@ -181,6 +181,40 @@ def train_or_eval(model, epochs=15, batch_size=32, lr=5e-3, l2=1e-2):
     return losses     
 
 import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+
+
+
+#%%
+from StandardScaler import StandardScaler
+train_data = pd.read_csv("sat.trn", sep=' ', header=None)
+test_data = pd.read_csv("sat.tst", sep=' ', header=None)
+sc = StandardScaler()
+x_train = sc.fit_transform(np.array(train_data.iloc[:, :-1]) )
+y_train = np.array(list(map(label2idx, train_data.iloc[:, -1])))
+x_test = sc.transform(np.array(test_data.iloc[:, :-1]) )
+y_test = np.array(list(map(label2idx, test_data.iloc[:, -1])))
+
+#%% Decision tree
+from DecisionTree import DecisionTreeClassifier
+model_Tree = DecisionTreeClassifier(min_samples_split=2, max_depth=4)
+model_Tree.fit(x_train, y_train.reshape([-1,1]))
+model_Tree.print_tree()
+Y_Pred_Tree = model_Tree.predict(x_train)
+print(
+    f"Decision Tree Classifier accruacy for training is {accuracy_score(y_train, Y_Pred_Tree)}")
+print("Confusion matrix for training:")
+print(confusion_matrix(y_train, Y_Pred_Tree))
+
+
+pred_Test_Tree = model_Tree.predict(x_test)
+print(
+    f"Test accuracy score of dicision tree is: {accuracy_score(pred_Test_Tree, y_test)}")
+print(confusion_matrix(y_test, pred_Test_Tree))
+
+
+#%%
 seed_everything(123)
 EDA() # do EDA on predictors and labels
 lr_model = Logistic()
