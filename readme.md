@@ -1,2 +1,3 @@
 # Project
-The main functions such EDA and training and validations are in [codes.py](./codes.py). 
+
+The code and report are in the file named [report.ipynb](./report.ipynb). The file [util.py](util.py) contains some imports for the project and StandardScaler class for data processing.
