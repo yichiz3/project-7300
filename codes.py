@@ -198,7 +198,7 @@ y_test = np.array(list(map(label2idx, test_data.iloc[:, -1])))
 
 #%% Decision tree
 from DecisionTree import DecisionTreeClassifier
-model_Tree = DecisionTreeClassifier(min_samples_split=2, max_depth=4)
+model_Tree = DecisionTreeClassifier(min_samples_split=4, max_depth=5)
 model_Tree.fit(x_train, y_train.reshape([-1,1]))
 model_Tree.print_tree()
 Y_Pred_Tree = model_Tree.predict(x_train)
@@ -214,6 +214,23 @@ print(
 print(confusion_matrix(y_test, pred_Test_Tree))
 
 
+#%% Adaboost
+from Adaboost import Adaboost
+model_Adabost = Adaboost(num_learner=10, Model=DecisionTreeClassifier, min_samples_split_lower=3,
+                         min_samples_split_upper=5, max_depth_lower=4, max_depth_upper=6)
+model_Adabost.fit(x_train, y_train.reshape(-1, 1))
+Y_Pred_ada = model_Adabost.predict(x_train)
+print(
+    f"Adaboost accuracy is {accuracy_score(Y_Pred_ada, y_train.reshape(-1))}")
+print("confusion matrix:")
+print(confusion_matrix(y_train, Y_Pred_ada))
+
+
+pred_Test_Adaboost = model_Adabost.predict(x_test)
+print(
+    f"Test score of logistic regression model is: {accuracy_score(pred_Test_Adaboost, y_test)}")
+print("Confusion matrix")
+print(confusion_matrix(y_test, pred_Test_Adaboost))
 #%%
 seed_everything(123)
 EDA() # do EDA on predictors and labels
